@@ -1,98 +1,172 @@
 import 'package:flutter/material.dart';
 
-class RectanglePage extends StatefulWidget {
-  const RectanglePage({super.key});
-
-  @override
-  State<RectanglePage> createState() => RectanglePageState();
+Widget neonBackground({required Widget child}) {
+  return Container(
+    decoration: const BoxDecoration(
+      gradient: LinearGradient(
+        colors: [Colors.black, Color(0xff1a0033)],
+        begin: Alignment.topCenter,
+        end: Alignment.bottomCenter,
+      ),
+    ),
+    child: child,
+  );
 }
 
-class RectanglePageState extends State<RectanglePage> {
-  // ปริมาตรทรงสี่เหลี่ยม = กว้าง × ยาว × สูง
-
-  int _width = 0;
-  int _length = 0;
-  int _height = 0;
-  int _volume = 0;
-
-  final TextEditingController _widthCtrl = TextEditingController();
-  final TextEditingController _lengthCtrl = TextEditingController();
-  final TextEditingController _heightCtrl = TextEditingController();
-
-  final InputDecoration _textFieldStyle = InputDecoration(
-    filled: true,
-    fillColor: Colors.blue[100],
-    border: const OutlineInputBorder(),
+Widget neonResult(String text) {
+  return Text(
+    text,
+    style: const TextStyle(
+      fontSize: 28,
+      fontWeight: FontWeight.bold,
+      color: Colors.purpleAccent,
+      shadows: [
+        Shadow(color: Colors.purpleAccent, blurRadius: 20),
+      ],
+    ),
   );
+}
 
-  void _calRectangle() {
-    setState(() {
-      _width = int.tryParse(_widthCtrl.text) ?? 0;
-      _length = int.tryParse(_lengthCtrl.text) ?? 0;
-      _height = int.tryParse(_heightCtrl.text) ?? 0;
-      _volume = _width * _length * _height;
-    });
-  }
+Widget neonInput(String label, TextEditingController controller) {
+  return Padding(
+    padding: const EdgeInsets.symmetric(vertical: 8),
+    child: TextField(
+      controller: controller,
+      keyboardType: TextInputType.number,
+      style: const TextStyle(color: Colors.white),
+      decoration: InputDecoration(
+        labelText: label,
+        labelStyle: const TextStyle(color: Colors.purpleAccent),
+        enabledBorder: OutlineInputBorder(
+          borderSide: const BorderSide(color: Colors.purpleAccent),
+          borderRadius: BorderRadius.circular(12),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderSide: const BorderSide(color: Colors.purple, width: 2),
+          borderRadius: BorderRadius.circular(12),
+        ),
+      ),
+    ),
+  );
+}
+
+Widget neonButton(VoidCallback onPressed) {
+  return Container(
+    width: double.infinity,
+    height: 50,
+    decoration: const BoxDecoration(
+      boxShadow: [
+        BoxShadow(color: Colors.purple, blurRadius: 20),
+      ],
+    ),
+    child: ElevatedButton(
+      style: ElevatedButton.styleFrom(
+        backgroundColor: Colors.black,
+        side: const BorderSide(color: Colors.purpleAccent, width: 2),
+      ),
+      onPressed: onPressed,
+      child: const Text(
+        "คำนวณ",
+        style: TextStyle(
+          fontSize: 18,
+          color: Colors.purpleAccent,
+        ),
+      ),
+    ),
+  );
+}
+
+/// ---------------- AREA ----------------
+class AreaPage extends StatefulWidget {
+  const AreaPage({super.key});
 
   @override
-  void dispose() {
-    _widthCtrl.dispose();
-    _lengthCtrl.dispose();
-    _heightCtrl.dispose();
-    super.dispose();
+  State<AreaPage> createState() => _AreaPageState();
+}
+
+class _AreaPageState extends State<AreaPage> {
+  int area = 0;
+  final widthCtrl = TextEditingController();
+  final lengthCtrl = TextEditingController();
+
+  void calculate() {
+    setState(() {
+      int w = int.tryParse(widthCtrl.text) ?? 0;
+      int l = int.tryParse(lengthCtrl.text) ?? 0;
+      area = w * l;
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("คำนวณปริมาตรทรงสี่เหลี่ยม"),
-        centerTitle: true,
+        title: const Text("คำนวณพื้นที่"),
+        backgroundColor: Colors.black,
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          children: [
-            const SizedBox(height: 20),
-            Text(
-              "กว้าง $_width × ยาว $_length × สูง $_height\n= ปริมาตร $_volume ลูกบาศก์หน่วย",
-              textAlign: TextAlign.center,
-              style: const TextStyle(fontSize: 20),
-            ),
-            const SizedBox(height: 30),
+      body: neonBackground(
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            children: [
+              neonResult("พื้นที่ = $area"),
+              const SizedBox(height: 20),
+              neonInput("ความกว้าง", widthCtrl),
+              neonInput("ความยาว", lengthCtrl),
+              const SizedBox(height: 20),
+              neonButton(calculate),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
 
-            TextField(
-              controller: _widthCtrl,
-              keyboardType: TextInputType.number,
-              decoration: _textFieldStyle.copyWith(
-                labelText: "ความกว้าง",
-              ),
-            ),
-            const SizedBox(height: 20),
+/// ---------------- VOLUME ----------------
+class VolumePage extends StatefulWidget {
+  const VolumePage({super.key});
 
-            TextField(
-              controller: _lengthCtrl,
-              keyboardType: TextInputType.number,
-              decoration: _textFieldStyle.copyWith(
-                labelText: "ความยาว",
-              ),
-            ),
-            const SizedBox(height: 20),
+  @override
+  State<VolumePage> createState() => _VolumePageState();
+}
 
-            TextField(
-              controller: _heightCtrl,
-              keyboardType: TextInputType.number,
-              decoration: _textFieldStyle.copyWith(
-                labelText: "ความสูง",
-              ),
-            ),
-            const SizedBox(height: 30),
+class _VolumePageState extends State<VolumePage> {
+  int volume = 0;
+  final widthCtrl = TextEditingController();
+  final lengthCtrl = TextEditingController();
+  final heightCtrl = TextEditingController();
 
-            ElevatedButton(
-              onPressed: _calRectangle,
-              child: const Text("คำนวณ"),
-            ),
-          ],
+  void calculate() {
+    setState(() {
+      int w = int.tryParse(widthCtrl.text) ?? 0;
+      int l = int.tryParse(lengthCtrl.text) ?? 0;
+      int h = int.tryParse(heightCtrl.text) ?? 0;
+      volume = w * l * h;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text("คำนวณปริมาตร"),
+        backgroundColor: Colors.black,
+      ),
+      body: neonBackground(
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            children: [
+              neonResult("ปริมาตร = $volume"),
+              const SizedBox(height: 20),
+              neonInput("ความกว้าง", widthCtrl),
+              neonInput("ความยาว", lengthCtrl),
+              neonInput("ความสูง", heightCtrl),
+              const SizedBox(height: 20),
+              neonButton(calculate),
+            ],
+          ),
         ),
       ),
     );
