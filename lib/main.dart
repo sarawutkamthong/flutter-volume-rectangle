@@ -11,45 +11,81 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Volume Calculator',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-        useMaterial3: true,
-      ),
-      routes: {
-        '/': (context) => const MyHomePage(),
-        '/rectangle_page': (context) => const RectanglePage(),
-      },
+      debugShowCheckedModeBanner: false,
+      theme: ThemeData.dark(),
+      home: const MenuPage(),
     );
   }
 }
 
-class MyHomePage extends StatelessWidget {
-  const MyHomePage({super.key});
+class MenuPage extends StatelessWidget {
+  const MenuPage({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("หน้าแรก"),
+        title: const Text("NEON CALCULATOR"),
         centerTitle: true,
+        backgroundColor: Colors.black,
       ),
-      body: Center(
-        child: TextButton(
-          onPressed: () {
-            Navigator.pushNamed(context, '/rectangle_page');
-          },
-          style: TextButton.styleFrom(
-            backgroundColor: Colors.red,
-            foregroundColor: Colors.white,
-            padding: const EdgeInsets.symmetric(
-              horizontal: 20,
-              vertical: 12,
-            ),
+      body: Container(
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            colors: [Colors.black, Color(0xff1a0033)],
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
           ),
-          child: const Text(
-            "คำนวณปริมาตรทรงสี่เหลี่ยม",
-            style: TextStyle(fontSize: 16),
+        ),
+        child: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+
+              neonButton(context, "คำนวณพื้นที่", const AreaPage()),
+              const SizedBox(height: 25),
+              neonButton(context, "คำนวณปริมาตร", const VolumePage()),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget neonButton(BuildContext context, String text, Widget page) {
+    return Container(
+      width: 260,
+      height: 60,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(15),
+        boxShadow: const [
+          BoxShadow(
+            color: Colors.purple,
+            blurRadius: 20,
+            spreadRadius: 1,
+          )
+        ],
+      ),
+      child: ElevatedButton(
+        style: ElevatedButton.styleFrom(
+          backgroundColor: Colors.black,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(15),
+            side: const BorderSide(color: Colors.purpleAccent, width: 2),
+          ),
+        ),
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => page),
+          );
+        },
+        child: Text(
+          text,
+          style: const TextStyle(
+            fontSize: 18,
+            color: Colors.purpleAccent,
+            fontWeight: FontWeight.bold,
           ),
         ),
       ),
